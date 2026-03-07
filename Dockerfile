@@ -1,13 +1,15 @@
 FROM python:3.12
 
-RUN apt-get update
-RUN apt-get install -y vim less man-db wget telnet curl net-tools iputils-ping htop dnsutils strace
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    vim less man-db wget telnet curl net-tools iputils-ping htop dnsutils strace \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY . .
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install flask gunicorn requests redis celery boto3 Pillow numpy
+COPY . .
 
 EXPOSE 5000
 
